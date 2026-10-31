@@ -11,7 +11,7 @@ using LMS___Mini_Version.Feature.enrollmentFeature.endpoints;
 using LMS___Mini_Version.Feature.paymentFeature.endpoints;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Net.Http.Json;
+
 
 namespace LMS___Mini_Version;
 
@@ -40,7 +40,7 @@ public class Program
         }
 
         if (app.Environment.IsDevelopment()) { app.UseSwagger(); app.UseSwaggerUI(); }
-        app.UseHttpsRedirection();
+        //app.UseHttpsRedirection();
         app.UseAuthorization();
         app.MapControllers();
         app.MapGetAllTracksEndpoint();
