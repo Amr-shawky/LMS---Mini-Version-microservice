@@ -1,0 +1,19 @@
+services:
+  lms-miniversion:
+    image: ${DOCKER_REGISTRY-}lmsminiversion
+    build:
+      context: LMS - Mini Version
+      dockerfile: Dockerfile
+
+  sqlserver:
+      image: mcr.microsoft.com/mssql/server:2022-latest
+      environment:
+         ACCEPT_EULA: "Y"
+         MSSQL_SA_PASSWORD: ${SQL_SA_PASSWORD:?SQL_SA_PASSWORD is required}
+      ports:
+        - "127.0.0.1:11433:1433"
+      volumes: 
+        - lms-sql-data:/var/opt/mssql
+        
+volumes:
+   lms-sql-data:
