@@ -13,7 +13,20 @@ services:
     depends_on:
       - sqlserver
       - rabbitmq 
-        
+       
+  test1:
+    image: test:demo
+    build:
+      context: test1
+      dockerfile: Dockerfile
+    environment:
+        RabbitMq__Host: rabbitmq
+        RabbitMq__VHost: Elevate
+        RabbitMq__Username: ${RABBITMQ_USER}
+        RabbitMq__Password: ${RABBITMQ_PASSWORD}
+    ports:
+      - "127.0.0.1:8082:8080"
+
   sqlserver:
       image: mcr.microsoft.com/mssql/server:2022-latest
       environment:

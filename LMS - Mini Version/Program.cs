@@ -11,6 +11,7 @@ using LMS___Mini_Version.Feature.enrollmentFeature.endpoints;
 using LMS___Mini_Version.Feature.paymentFeature.endpoints;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Http.Json;
 
 namespace LMS___Mini_Version;
 
@@ -29,6 +30,8 @@ public class Program
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddMediatR(typeof(Program).Assembly);
         builder.Services.AddEnrollmentMessaging(builder.Configuration);
+        builder.Services.AddSwaggerGen();
+        builder.Services.AddHttpClient();
 
         var app = builder.Build();
         using (var scope = app.Services.CreateScope())
@@ -56,6 +59,25 @@ public class Program
         app.MapEnrollmentAssignmentEndpoints();
         app.MapGet("api/v4/test", async (IMediator mediator) => await mediator.Send(new GetAllTrackQuery()));
         app.MapUpdateTrackEndpoint();
+
+
+        app.MapGet("/api/demo/call-test1", async (IHttpClientFactory factory) =>
+        {
+            var client = factory.CreateClient();
+
+            var response = await client.GetFromJsonAsync<string>(
+                "http://test1:8080/api/notifications/ping"
+            );
+
+            return Results.Ok(new
+            {
+                Service = "LMS",
+                ResponseFromTest1 = response
+            });
+        });
+
+
+
         app.Run();
     }
 }
