@@ -4,7 +4,16 @@ services:
     build:
       context: LMS - Mini Version
       dockerfile: Dockerfile
-
+    environment:
+        ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=LMS_MiniDB_Docker;User Id=sa;Password=${SQL_SA_PASSWORD};TrustServerCertificate=True"
+        RabbitMq__Host: rabbitmq
+        RabbitMq__VHost: Elevate
+        RabbitMq__Username: ${RABBITMQ_USER}
+        RabbitMq__Password: ${RABBITMQ_PASSWORD}
+    depends_on:
+      - sqlserver
+      - rabbitmq 
+        
   sqlserver:
       image: mcr.microsoft.com/mssql/server:2022-latest
       environment:
@@ -14,6 +23,20 @@ services:
         - "127.0.0.1:11433:1433"
       volumes: 
         - lms-sql-data:/var/opt/mssql
+
+
+  rabbitmq:
+    image: rabbitmq:4-management
+    environment: 
+       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+       RABBITMQ_DEFAULT_VHOST: Elevate
+    ports:
+       - "5672:5672"
+       - "15672:15672" 
+    volumes:
+       - rabbitmq-data:/var/lib/rabbitmq
         
 volumes:
    lms-sql-data:
+   rabbitmq-data:
